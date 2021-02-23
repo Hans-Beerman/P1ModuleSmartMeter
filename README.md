@@ -1,6 +1,6 @@
 **P1-module smart meter**
 
-The P1-module is a small module, based on a Wemos D1 Mini (with a ESP8266) to collect information from the P1 port of a (Dutch) smart meter.
+The P1-module is a small module, based on a Wemos D1 Mini (with an ESP8266) to collect information from the P1 port of a (Dutch) smart meter.
 
 This module can be used for smart meters running DSMR Version 2.2 or higher.
 
