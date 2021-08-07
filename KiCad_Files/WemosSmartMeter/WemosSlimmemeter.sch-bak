@@ -1,0 +1,315 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title "P1-port smart meter"
+Date "2021-02-01"
+Rev "V1.0.0.0"
+Comp "SDS project"
+Comment1 "Getekend door: Hans Beerman"
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L MCU_Module:WeMos_D1_mini U1
+U 1 1 5E2F27DE
+P 3950 3600
+F 0 "U1" H 3550 3050 50  0000 C CNN
+F 1 "WeMos_D1_mini" H 3300 2950 50  0000 C CNN
+F 2 "Module:WEMOS_D1_mini_light" H 3950 2450 50  0001 C CNN
+F 3 "https://wiki.wemos.cc/products:d1:d1_mini#documentation" H 2100 2450 50  0001 C CNN
+	1    3950 3600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3850 2650 3850 2800
+$Comp
+L Transistor_BJT:BC547 Q1
+U 1 1 5E3065B6
+P 5650 4600
+F 0 "Q1" H 5841 4646 50  0000 L CNN
+F 1 "BC547" H 5841 4555 50  0000 L CNN
+F 2 "Package_TO_SOT_THT:TO-92_Inline" H 5850 4525 50  0001 L CIN
+F 3 "http://www.fairchildsemi.com/ds/BC/BC547.pdf" H 5650 4600 50  0001 L CNN
+	1    5650 4600
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Device:R R1
+U 1 1 5E30B710
+P 5550 3300
+F 0 "R1" H 5620 3346 50  0000 L CNN
+F 1 "1k" V 5550 3250 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 5480 3300 50  0001 C CNN
+F 3 "~" H 5550 3300 50  0001 C CNN
+	1    5550 3300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5550 2800 5550 3150
+Wire Wire Line
+	4050 2800 5550 2800
+Wire Wire Line
+	5850 4600 5800 4600
+$Comp
+L Device:R R2
+U 1 1 5E30A55E
+P 5950 4600
+F 0 "R2" V 5825 4600 50  0000 C CNN
+F 1 "1k" V 5950 4600 50  0000 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 5880 4600 50  0001 C CNN
+F 3 "~" H 5950 4600 50  0001 C CNN
+	1    5950 4600
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3950 5100 3950 4400
+Wire Wire Line
+	5550 4800 5550 5100
+$Comp
+L Device:R R3
+U 1 1 5E30CA3E
+P 6150 3300
+F 0 "R3" H 6000 3350 50  0000 L CNN
+F 1 "3k3" V 6150 3250 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P7.62mm_Horizontal" V 6080 3300 50  0001 C CNN
+F 3 "~" H 6150 3300 50  0001 C CNN
+	1    6150 3300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6150 3150 6150 2650
+Connection ~ 6150 2650
+Wire Wire Line
+	6150 2650 5675 2650
+Wire Wire Line
+	5550 5100 6300 5100
+Connection ~ 5550 5100
+Wire Wire Line
+	5550 3450 5550 3900
+Wire Wire Line
+	3550 3500 3375 3500
+Wire Wire Line
+	3375 3500 3375 2525
+Wire Wire Line
+	3375 2525 5225 2525
+Wire Wire Line
+	5225 2525 5225 3900
+Wire Wire Line
+	5225 3900 5550 3900
+Connection ~ 5550 3900
+Wire Wire Line
+	5550 3900 5550 4400
+$Comp
+L Connector_Generic:Conn_01x06 J1
+U 1 1 5FC94F8E
+P 6900 4800
+F 0 "J1" H 6980 4792 50  0000 L CNN
+F 1 "P1 port" H 6980 4701 50  0000 L CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x06_P2.54mm_Horizontal" H 6900 4800 50  0001 C CNN
+F 3 "~" H 6900 4800 50  0001 C CNN
+	1    6900 4800
+	1    0    0    -1  
+$EndComp
+NoConn ~ 6700 4900
+NoConn ~ 4350 4000
+NoConn ~ 4350 3800
+NoConn ~ 4350 3700
+NoConn ~ 4350 3900
+NoConn ~ 4350 3600
+NoConn ~ 4350 3400
+NoConn ~ 4350 3200
+NoConn ~ 4350 3100
+NoConn ~ 3550 3200
+NoConn ~ 3550 3600
+$Comp
+L power:GND #PWR0101
+U 1 1 5FCAB1E3
+P 4425 5225
+F 0 "#PWR0101" H 4425 4975 50  0001 C CNN
+F 1 "GND" H 4430 5052 50  0000 C CNN
+F 2 "" H 4425 5225 50  0001 C CNN
+F 3 "" H 4425 5225 50  0001 C CNN
+	1    4425 5225
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4425 5225 4425 5100
+Connection ~ 4425 5100
+Wire Wire Line
+	4425 5100 5550 5100
+$Comp
+L power:+5V #PWR0102
+U 1 1 5FCABCE6
+P 5675 2375
+F 0 "#PWR0102" H 5675 2225 50  0001 C CNN
+F 1 "+5V" H 5690 2548 50  0000 C CNN
+F 2 "" H 5675 2375 50  0001 C CNN
+F 3 "" H 5675 2375 50  0001 C CNN
+	1    5675 2375
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5675 2375 5675 2650
+Connection ~ 5675 2650
+Wire Wire Line
+	6150 3450 6150 4600
+Wire Wire Line
+	6150 5000 6700 5000
+Wire Wire Line
+	6100 4600 6150 4600
+Connection ~ 6150 4600
+Wire Wire Line
+	6150 4600 6150 5000
+$Comp
+L power:PWR_FLAG #FLG0101
+U 1 1 5FD20090
+P 5350 2375
+F 0 "#FLG0101" H 5350 2450 50  0001 C CNN
+F 1 "PWR_FLAG" H 5350 2548 50  0000 C CNN
+F 2 "" H 5350 2375 50  0001 C CNN
+F 3 "~" H 5350 2375 50  0001 C CNN
+	1    5350 2375
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5350 2375 5350 2650
+Wire Wire Line
+	3850 2650 5350 2650
+Connection ~ 5350 2650
+Wire Wire Line
+	5350 2650 5675 2650
+$Comp
+L power:PWR_FLAG #FLG0102
+U 1 1 5FD21DD6
+P 4250 4975
+F 0 "#FLG0102" H 4250 5050 50  0001 C CNN
+F 1 "PWR_FLAG" H 4250 5148 50  0000 C CNN
+F 2 "" H 4250 4975 50  0001 C CNN
+F 3 "~" H 4250 4975 50  0001 C CNN
+	1    4250 4975
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4250 4975 4250 5100
+Wire Wire Line
+	3950 5100 4250 5100
+Connection ~ 4250 5100
+Wire Wire Line
+	4250 5100 4425 5100
+$Comp
+L Connector_Generic:Conn_01x02 J2
+U 1 1 5FF4A109
+P 4875 3300
+F 0 "J2" H 4955 3292 50  0000 L CNN
+F 1 "DSMR2.2" H 4550 3425 50  0000 L CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 4875 3300 50  0001 C CNN
+F 3 "~" H 4875 3300 50  0001 C CNN
+	1    4875 3300
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR01
+U 1 1 5FF6E3A1
+P 4675 3600
+F 0 "#PWR01" H 4675 3350 50  0001 C CNN
+F 1 "GND" H 4680 3427 50  0000 C CNN
+F 2 "" H 4675 3600 50  0001 C CNN
+F 3 "" H 4675 3600 50  0001 C CNN
+	1    4675 3600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4350 3300 4675 3300
+Wire Wire Line
+	4675 3400 4675 3600
+NoConn ~ 4350 3500
+Wire Wire Line
+	6700 4800 6300 4800
+Wire Wire Line
+	6300 4800 6300 5100
+Connection ~ 6300 5100
+Wire Wire Line
+	6300 5100 6700 5100
+$Comp
+L usb_a:USB_A_conn J3
+U 1 1 60169139
+P 2175 3975
+F 0 "J3" H 2175 4425 50  0000 C CNN
+F 1 "Ext. power" H 2175 4350 50  0000 C CNN
+F 2 "Footprints-2:USB_A_Vertical" H 2325 3925 50  0001 C CNN
+F 3 " ~" H 2325 3925 50  0001 C CNN
+	1    2175 3975
+	1    0    0    -1  
+$EndComp
+NoConn ~ 2475 3975
+NoConn ~ 2475 4075
+Wire Wire Line
+	2175 5100 3950 5100
+Connection ~ 3950 5100
+Wire Wire Line
+	2950 3775 2950 2650
+Wire Wire Line
+	2950 2650 3850 2650
+Connection ~ 3850 2650
+Wire Wire Line
+	2175 4375 2175 5100
+$Comp
+L Diode:1N5819 D1
+U 1 1 6017409F
+P 2725 3775
+F 0 "D1" H 2725 3558 50  0000 C CNN
+F 1 "1N5819" H 2725 3649 50  0000 C CNN
+F 2 "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal" H 2725 3600 50  0001 C CNN
+F 3 "http://www.vishay.com/docs/88525/1n5817.pdf" H 2725 3775 50  0001 C CNN
+	1    2725 3775
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	2875 3775 2950 3775
+Wire Wire Line
+	2475 3775 2550 3775
+$Comp
+L Diode:1N5819 D2
+U 1 1 601788D8
+P 6525 2650
+F 0 "D2" H 6525 2867 50  0000 C CNN
+F 1 "1N5819" H 6525 2776 50  0000 C CNN
+F 2 "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal" H 6525 2475 50  0001 C CNN
+F 3 "http://www.vishay.com/docs/88525/1n5817.pdf" H 6525 2650 50  0001 C CNN
+	1    6525 2650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6675 2650 6675 4600
+Wire Wire Line
+	6675 4600 6700 4600
+Wire Wire Line
+	6700 4700 6350 4700
+$Comp
+L power:PWR_FLAG #FLG0103
+U 1 1 6017FD43
+P 2550 3450
+F 0 "#FLG0103" H 2550 3525 50  0001 C CNN
+F 1 "PWR_FLAG" H 2550 3623 50  0000 C CNN
+F 2 "" H 2550 3450 50  0001 C CNN
+F 3 "~" H 2550 3450 50  0001 C CNN
+	1    2550 3450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2550 3775 2550 3450
+Connection ~ 2550 3775
+Wire Wire Line
+	2550 3775 2575 3775
+Wire Wire Line
+	6150 2650 6350 2650
+Wire Wire Line
+	6350 4700 6350 2650
+Connection ~ 6350 2650
+Wire Wire Line
+	6350 2650 6375 2650
+$EndSCHEMATC
