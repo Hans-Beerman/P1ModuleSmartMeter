@@ -14,7 +14,6 @@
 //
 // information about NTP.h, see: https://platformio.org/lib/show/5438/NTP
 //
-/*
 
 /* ***********************************************************************
 PLEASE READ THIS FIRST

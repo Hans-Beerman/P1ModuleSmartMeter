@@ -1,5 +1,5 @@
 /*
-      Copyright 2020      Hans Beerman <hans.beerman@xs4all.nl>
+      Copyright 2021      Hans Beerman <hans.beerman@xs4all.nl>
                           
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 
 // software version
 #define P1_MODULE_SOFTWARE_VERSION "P1 Port Smart Meter Version 1.0.0.0  Copyright Hans Beerman [2020 - 2021]"
-#define DATE_OFF_VERSION "Date: 2021-02-23\n\r"
+#define DATE_OFF_VERSION "Date: 2021-08-18\n\r"
 
 // * Baud rate for both hardware and software serial
 //#define BAUD_RATE 115200 // baudrate for DSMR > V2.2
