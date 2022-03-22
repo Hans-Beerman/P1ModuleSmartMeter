@@ -17,8 +17,8 @@
 #pragma once
 
 // software version
-#define P1_MODULE_SOFTWARE_VERSION "P1 Port Smart Meter Version 1.0.0.0  Copyright Hans Beerman [2020 - 2021]"
-#define DATE_OFF_VERSION "Date: 2021-08-18\n\r"
+#define P1_MODULE_SOFTWARE_VERSION "P1 Port Smart Meter Version 1.0.0.1  Copyright Hans Beerman [2020 - 2022]"
+#define DATE_OFF_VERSION "Date: 2022-03-22\n\r"
 
 // * Baud rate for both hardware and software serial
 //#define BAUD_RATE 115200 // baudrate for DSMR > V2.2
@@ -35,7 +35,7 @@
 #define PIN_DSMR_V2_2 D1
 
 // * Max telegram length
-#define P1_MAXLINELENGTH 128
+#define P1_MAXLINELENGTH 200
 
 // * The hostname of our little creature
 #define HOSTNAME "p1-port-smart-meter"
