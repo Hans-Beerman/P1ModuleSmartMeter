@@ -101,10 +101,15 @@ bool DSMRV2_2IsUsed = false;
 
 bool timeStampReceived = false;
 
+int rndNumber;
+int rndNumber2;
+int rndNumber3;
+
 // **********************************
 // * Function definitions           *
 // **********************************
 
+void send_mqtt_message(const char *topic, const char *payload);
 
 // **********************************
 // * Ticker (System LED Blinker)    *
@@ -137,7 +142,7 @@ int currentYear;
 void initNTP() {
   ntp.ruleDST("CEST", Last, Sun, Mar, 2, 120); // last sunday in march 2:00, timezone +120min (+1 GMT + 1h summertime offset)
   ntp.ruleSTD("CET", Last, Sun, Oct, 3, 60); // last sunday in october 3:00, timezone +60min (+1 GMT)
-  ntp.begin(false); // start NTP nonblocking
+  ntp.begin(); 
   ntp.update();
 
   currentHour = ntp.hours();
@@ -164,9 +169,6 @@ void getCurrentNTPTime() {
   snprintf(newDateTimeStr, sizeof(newDateTimeStr), "%4d-%02d-%02d %02d:%02d:%02d", currentYear, currentMonth, currentDay, currentHour, currentMinutes, currentSecs);
 }
 
-
-
-
 // **********************************
 // * telnet                           *
 // **********************************
@@ -177,7 +179,6 @@ void onTelnetConnect(String ip) {
     Serial.print(telnet.getIP());
     Serial.println(" connected");
     telnet.println("\n\rWelcome " + telnet.getIP() + "\r");
-    telnet.println("(Use ^] + q  to disconnect.)\r");
     telnet.println("\r");
     telnet.print(P1_MODULE_SOFTWARE_VERSION);
     telnet.println("\r");
@@ -185,6 +186,8 @@ void onTelnetConnect(String ip) {
     telnet.println("\r");
     telnet.println("\r");
     telnet.println(ntpDateTimeStr);
+    telnet.println("\r");
+    telnet.println("Press q, followed by [Enter], to quit\r");
     telnet.println("\r");
 }
 
@@ -205,6 +208,12 @@ void onTelnetConnectionAttempt(String ip) {
     Serial.println(" tried to connected");
 }
 
+void onInputRec(String aReceivedStr) {
+    if ((aReceivedStr == "q") || (aReceivedStr == "Q")) {
+        //disconnect the client
+        telnet.disconnectClient();
+    }
+}
 
 void setupTelnet() {
     if (telnet.begin()) {
@@ -212,6 +221,7 @@ void setupTelnet() {
         telnet.onConnectionAttempt(onTelnetConnectionAttempt);
         telnet.onReconnect(onTelnetReconnect);
         telnet.onDisconnect(onTelnetDisconnect);
+        telnet.onInputReceived(onInputRec);
         Serial.println("- Telnet is running. Connect to Telnet using:");
         Serial.println("telnet " + ip_addr.toString());
     } else {
@@ -228,8 +238,7 @@ void setupTelnet() {
 // **********************************
 
 // * Send a message to a broker topic
-void send_mqtt_message(const char *topic, char *payload)
-{
+void send_mqtt_message(const char *topic, const char *payload) {
     Serial.printf("MQTT Outgoing on %s: ", topic);
     Serial.println(payload);
 
@@ -242,8 +251,11 @@ void send_mqtt_message(const char *topic, char *payload)
 }
 
 // * Reconnect to MQTT server and subscribe to in and out topics
-bool mqtt_reconnect()
-{
+bool mqtt_reconnect() {
+    char myHostname[128];
+    // make random hostname
+    snprintf(myHostname, sizeof(myHostname), "%s-%d%d%d", HOSTNAME, rndNumber, rndNumber2, rndNumber3);
+
     // * Loop until we're reconnected
     int MQTT_RECONNECT_RETRIES = 0;
 
@@ -256,13 +268,13 @@ bool mqtt_reconnect()
 
 
         // * Attempt to connect
-        if (mqtt_client.connect(HOSTNAME, MQTT_USER, MQTT_PASS))
+        if (mqtt_client.connect(myHostname, MQTT_USER, MQTT_PASS))
         {
             Serial.println(F("MQTT connected!"));
             telnet.println(F("MQTT connected!\r"));
 
             // * Once connected, publish an announcement...
-            snprintf(logMess, sizeof(logMess), "p1 port module alive, hostname: %s", HOSTNAME);
+            snprintf(logMess, sizeof(logMess), "p1 port module alive, hostname: %s", myHostname);
             mqtt_client.publish("Status", logMess);
 
             Serial.printf("MQTT root topic: %s\n", MQTT_ROOT_TOPIC);
@@ -320,8 +332,47 @@ void send_data_to_broker()
     send_metric("delivery_high_tarif", DELIVERY_HIGH_TARIF);
     send_metric("actual_consumption", ACTUAL_CONSUMPTION);
     send_metric("actual_delivery", ACTUAL_DELIVERY);
+    ACTUAL_POWER = ACTUAL_CONSUMPTION - ACTUAL_DELIVERY;
+    send_metric("actual_power", ACTUAL_POWER);
     send_metric("instant_power_usage", INSTANT_POWER_USAGE);
     send_metric("instant_power_current", INSTANT_POWER_CURRENT);
+    send_metric("instant_voltage_l1", INSTANT_VOLTAGE_L1);
+    send_metric("instant_voltage_l2", INSTANT_VOLTAGE_L2);
+    send_metric("instant_voltage_l3", INSTANT_VOLTAGE_L3);
+    send_metric("instant_current_l1", INSTANT_CURRENT_L1);
+    send_metric("instant_current_l2", INSTANT_CURRENT_L2);
+    send_metric("instant_current_l3", INSTANT_CURRENT_L3);
+    send_metric("instant_active_power_consumption_l1", INSTANT_ACTIVE_POWER_CONSUMPTION_L1);
+    send_metric("instant_active_power_consumption_l2", INSTANT_ACTIVE_POWER_CONSUMPTION_L2);
+    send_metric("instant_active_power_consumption_l3", INSTANT_ACTIVE_POWER_CONSUMPTION_L3);
+    send_metric("instant_active_power_delivery_l1", INSTANT_ACTIVE_POWER_DELIVERY_L1);
+    send_metric("instant_active_power_delivery_l2", INSTANT_ACTIVE_POWER_DELIVERY_L2);
+    send_metric("instant_active_power_delivery_l3", INSTANT_ACTIVE_POWER_DELIVERY_L3);
+    ACTIVE_POWER_L1 = INSTANT_ACTIVE_POWER_CONSUMPTION_L1 - INSTANT_ACTIVE_POWER_DELIVERY_L1;
+    ACTIVE_POWER_L2 = INSTANT_ACTIVE_POWER_CONSUMPTION_L2 - INSTANT_ACTIVE_POWER_DELIVERY_L2;
+    ACTIVE_POWER_L3 = INSTANT_ACTIVE_POWER_CONSUMPTION_L3 - INSTANT_ACTIVE_POWER_DELIVERY_L3;
+    if (INSTANT_VOLTAGE_L1 > 0) {
+        ACTIVE_CURRENT_L1 = (long)round(((double)ACTIVE_POWER_L1 / ((double)INSTANT_VOLTAGE_L1 / 1000.0) * 1000.0)); 
+    } else {
+        ACTIVE_CURRENT_L1 = 0;
+    }
+    if (INSTANT_VOLTAGE_L2 > 0) {
+        ACTIVE_CURRENT_L2 = (long)round(((double)ACTIVE_POWER_L2 / ((double)INSTANT_VOLTAGE_L2 / 1000.0) * 1000.0)); 
+    } else {
+        ACTIVE_CURRENT_L2 = 0;
+    }
+    if (INSTANT_VOLTAGE_L3 > 0) {
+        ACTIVE_CURRENT_L3 = (long)round(((double)ACTIVE_POWER_L3 / ((double)INSTANT_VOLTAGE_L3 / 1000.0) * 1000.0)); 
+    } else {
+        ACTIVE_CURRENT_L3 = 0;
+    }
+    send_metric("active_power_l1", ACTIVE_POWER_L1);
+    send_metric("active_power_l2", ACTIVE_POWER_L2);
+    send_metric("active_power_l3", ACTIVE_POWER_L3);
+    send_metric("active_current_l1", ACTIVE_CURRENT_L1);
+    send_metric("active_current_l2", ACTIVE_CURRENT_L2);
+    send_metric("active_current_l3", ACTIVE_CURRENT_L3);
+
     send_metric("gas_meter_m3", GAS_METER_M3);
 
     send_metric("actual_tarif_group", ACTUAL_TARIF);
@@ -582,20 +633,6 @@ bool decode_telegram(int len)
         return messageComplete;
     }
 
-    // 1-0:21.7.0(00.378*kW)
-    // 1-0:21.7.0 = Instantaan vermogen Elektriciteit levering
-    if (strncmp(telegram, "1-0:21.7.0", strlen("1-0:21.7.0")) == 0) {
-        INSTANT_POWER_USAGE = getValue(telegram, len, '(', '*');
-        return messageComplete;
-    }
-
-    // 1-0:31.7.0(002*A)
-    // 1-0:31.7.0 = Instantane stroom Elektriciteit
-    if (strncmp(telegram, "1-0:31.7.0", strlen("1-0:31.7.0")) == 0) {
-        INSTANT_POWER_CURRENT = getValue(telegram, len, '(', '*');
-        return messageComplete;
-    }
-
     // 0-1:24.2.1(150531200000S)(00811.923*m3)
     // 0-1:24.2.1 = Gas (DSMR v5.0.2)
     if (strncmp(telegram, "0-1:24.2.1", strlen("0-1:24.2.1")) == 0) {
@@ -638,11 +675,61 @@ bool decode_telegram(int len)
         return messageComplete;
     }
 
+    // 1-0:32.7.0(000.0*V)
+    // 1-0:32.7.0 = Instantaneous voltage L1 in V resolution
+    if (strncmp(telegram, "1-0:32.7.0", strlen("1-0:32.7.0")) == 0) {
+        L1_DETECTED = true;
+        INSTANT_VOLTAGE_L1 = getValue(telegram, len, '(', '*');
+        return messageComplete;
+    }
+
+    // 1-0:52.7.0(000.0*V)
+    // 1-0:52.7.0 = Instantaneous voltage L2 in V resolution
+    if (strncmp(telegram, "1-0:52.7.0", strlen("1-0:52.7.0")) == 0) {
+        L2_DETECTED = true;
+        INSTANT_VOLTAGE_L2 = getValue(telegram, len, '(', '*');
+        return messageComplete;
+    }
+
+    // 1-0:72.7.0(000.0*V)
+    // 1-0:72.7.0 = Instantaneous voltage L3 in V resolution
+    if (strncmp(telegram, "1-0:72.7.0", strlen("1-0:72.7.0")) == 0) {
+        L3_DETECTED = true;
+        INSTANT_VOLTAGE_L3 = getValue(telegram, len, '(', '*');
+        return messageComplete;
+    }
+
+    // 1-0:31.7.0(000*A)
+    // 1-0:31.7.0 = Instantaneous current L1 in A resolution
+    if (strncmp(telegram, "1-0:31.7.0", strlen("1-0:31.7.0")) == 0) {
+        L1_DETECTED = true;
+        INSTANT_CURRENT_L1 = getValue(telegram, len, '(', '*');
+        INSTANT_POWER_CURRENT = INSTANT_CURRENT_L1;
+        return messageComplete;
+    }
+
+    // 1-0:51.7.0(000*A)
+    // 1-0:51.7.0 = Instantaneous current L2 in A resolution
+    if (strncmp(telegram, "1-0:51.7.0", strlen("1-0:51.7.0")) == 0) {
+        L2_DETECTED = true;
+        INSTANT_CURRENT_L2 = getValue(telegram, len, '(', '*');
+        return messageComplete;
+    }
+
+    // 1-0:71.7.0(000*A)
+    // 1-0:71.7.0 = Instantaneous current L3 in A resolution
+    if (strncmp(telegram, "1-0:71.7.0", strlen("1-0:71.7.0")) == 0) {
+        L3_DETECTED = true;
+        INSTANT_CURRENT_L3 = getValue(telegram, len, '(', '*');
+        return messageComplete;
+    }
+
     // 1-0:21.7.0(00.000*kW)
     // 1-0:21.7.0 = Actuele verbruik L1
     if (strncmp(telegram, "1-0:21.7.0", strlen("1-0:21.7.0")) == 0) {
         L1_DETECTED = true;
         INSTANT_ACTIVE_POWER_CONSUMPTION_L1 = getValue(telegram, len, '(', '*');
+        INSTANT_POWER_USAGE = INSTANT_ACTIVE_POWER_CONSUMPTION_L1;
         return messageComplete;
     }
 
@@ -996,6 +1083,12 @@ void setup()
     Serial.println("\r");
     Serial.printf("\n\r\n\rSerial port = %d b/s\n\r", Serial.baudRate());
 
+    // generate random numberfor MQTT Id
+    srand(time(NULL));
+    rndNumber = rand();
+    rndNumber2 = rand();
+    rndNumber3 = rand();
+
     // * Configure EEPROM
     EEPROM.begin(512);
     
@@ -1020,7 +1113,7 @@ void setup()
     setupTelnet();
 
     // * Start ticker with 1.0 after connection
-    ticker.attach(1.0, tick);
+    // ticker.attach(1.0, tick);
 
     // * Configure OTA
     setup_ota();
@@ -1053,7 +1146,7 @@ void ntpUpdateLoop(void) {
 // **********************************
 
 unsigned long timerms = 0;
-// unsigned long cntr = 0;
+
 char telnetMess[255];
 
 bool firstTime = true;
@@ -1097,4 +1190,5 @@ void loop()
         }
     }
     mqtt_client.loop();
+    yield();
 }

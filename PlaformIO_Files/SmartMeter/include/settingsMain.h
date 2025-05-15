@@ -17,8 +17,8 @@
 #pragma once
 
 // software version
-#define P1_MODULE_SOFTWARE_VERSION "P1 Port Smart Meter Version 1.0.0.1  Copyright Hans Beerman [2020 - 2022]"
-#define DATE_OFF_VERSION "Date: 2022-03-22\n\r"
+#define P1_MODULE_SOFTWARE_VERSION "P1 Port Smart Meter Version 1.0.3.1  Copyright Hans Beerman [2020 - 2025]"
+#define DATE_OFF_VERSION "Date: 2025-05-15\n\r"
 
 // * Baud rate for both hardware and software serial
 //#define BAUD_RATE 115200 // baudrate for DSMR > V2.2
@@ -56,7 +56,6 @@ unsigned long LAST_RECONNECT_ATTEMPT = 0;
 
 // * To be filled with EEPROM data
 
-//char MQTT_HOST[64] = "10.0.0.132";
 char MQTT_HOST[64] = MY_MQTT_HOST;
 char MQTT_PORT[6]  = MY_MQTT_PORT;
 char MQTT_USER[32] = MY_MQTT_USERNAME;
@@ -74,10 +73,10 @@ int VALID_MESSAGES = 0;
 int INVALID_MESSAGES = 0;
 
 // * Set to store date - time value P1 message
-char DATE_TIME_P1[15];
+char DATE_TIME_P1[25];
 int P1_HOURS = -1;
 int P1_MINUTES = -1;
-char PREVIOUS_DATE_TIME_P1[15];
+char PREVIOUS_DATE_TIME_P1[25];
 int PREVIOUS_P1_HOURS = -1;
 int PREVIOUS_P1_MINUTES = -1;
 
@@ -87,15 +86,29 @@ long CONSUMPTION_HIGH_TARIF;
 long DELIVERY_LOW_TARIF;
 long DELIVERY_HIGH_TARIF;
 long ACTUAL_CONSUMPTION;
+long ACTUAL_POWER;
 long ACTUAL_DELIVERY;
 long INSTANT_POWER_CURRENT;
 long INSTANT_POWER_USAGE;
+unsigned long INSTANT_VOLTAGE_L1 = 0;
+unsigned long INSTANT_VOLTAGE_L2 = 0;
+unsigned long INSTANT_VOLTAGE_L3 = 0;
+unsigned long INSTANT_CURRENT_L1 = 0;
+unsigned long INSTANT_CURRENT_L2 = 0;
+unsigned long INSTANT_CURRENT_L3 = 0;
 long INSTANT_ACTIVE_POWER_CONSUMPTION_L1 = 0;
 long INSTANT_ACTIVE_POWER_CONSUMPTION_L2 = 0;
 long INSTANT_ACTIVE_POWER_CONSUMPTION_L3 = 0;
 long INSTANT_ACTIVE_POWER_DELIVERY_L1 = 0;
 long INSTANT_ACTIVE_POWER_DELIVERY_L2 = 0;
 long INSTANT_ACTIVE_POWER_DELIVERY_L3 = 0;
+long ACTIVE_POWER_L1 = 0;
+long ACTIVE_POWER_L2 = 0;
+long ACTIVE_POWER_L3 = 0;
+long ACTIVE_CURRENT_L1 = 0;
+long ACTIVE_CURRENT_L2 = 0;
+long ACTIVE_CURRENT_L3 = 0;
+
 long SUM_INSTANT_ACTIVE_POWER_CONSUMPTION_L1 = 0;
 long SUM_INSTANT_ACTIVE_POWER_CONSUMPTION_L2 = 0;
 long SUM_INSTANT_ACTIVE_POWER_CONSUMPTION_L3 = 0;
